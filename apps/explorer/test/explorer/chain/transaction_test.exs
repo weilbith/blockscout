@@ -254,7 +254,7 @@ defmodule Explorer.Chain.TransactionTest do
         |> insert(to_address: insert(:contract_address))
         |> Repo.preload(to_address: :smart_contract)
 
-      assert Transaction.decoded_input_data(transaction) == {:error, :contract_not_verified}
+      assert Transaction.decoded_input_data(transaction) == {:error, :contract_not_verified, []}
     end
 
     test "that a contract call transaction that has a verified contract returns the decoded input data" do
