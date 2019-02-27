@@ -6,6 +6,7 @@ defmodule BlockScoutWeb.TransactionView do
   alias Explorer.Chain
   alias Explorer.Chain.Block.Reward
   alias Explorer.Chain.{Address, Block, InternalTransaction, Transaction, Wei}
+  alias Explorer.ExchangeRates.Token
   alias Timex.Duration
 
   import BlockScoutWeb.Gettext
@@ -108,6 +109,10 @@ defmodule BlockScoutWeb.TransactionView do
       {:actual, value} -> value
       {:maximum, value} -> "#{gettext("Max of")} #{value}"
     end
+  end
+
+  def empty_exchange_rate?(exchange_rate) do
+    Token.null?(exchange_rate)
   end
 
   def formatted_status(transaction) do
