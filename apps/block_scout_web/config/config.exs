@@ -24,7 +24,9 @@ config :block_scout_web,
     "EtherChain" => "https://www.etherchain.org/",
     "Bloxy" => "https://bloxy.info/"
   },
-  other_networks: [
+
+  other_networks: [],
+  xxother_networks: [
     %{
       title: "POA Core",
       url: "https://blockscout.com/poa/core"
