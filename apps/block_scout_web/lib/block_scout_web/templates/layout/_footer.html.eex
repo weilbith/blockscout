@@ -35,6 +35,10 @@
     <% col_size = if Enum.empty?(other_explorers), do: 4, else: 3 %>
 
     <div class="row">
+        <div class="col-md-4">
+            <a href="https://trustlines.foundation/legal-imprint-privacy-policy.html" class="footer_link">Legal Imprint & Privacy Policy</a>
+        </div>
+
       <% main_nets = main_nets() %>
 
       <%= unless Enum.empty?(main_nets) do %>
