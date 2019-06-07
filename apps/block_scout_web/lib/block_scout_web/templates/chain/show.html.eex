@@ -1,36 +1,49 @@
-<div class="dashboard-banner-container d-none d-md-block" data-page="chain-details">
-  <img src="<%= static_path(@conn, "/images/cube.svg") %>" alt="cube_graphic" class="dashboard-banner-graphic">
+<div class='dashboard-banner-container' data-page="chain-details">
   <div class="container">
-    <div class="dashboard-banner" >
-      <div class="dashboard-banner-network-stats">
-        <%= case @average_block_time do %>
-          <% {:error, :disabled} -> %>
-            <%= nil %>
-          <% average_block_time -> %>
-            <div class="dashboard-banner-network-stats-item">
-              <span class="dashboard-banner-network-stats-label">
-                <%= gettext "Average block time" %>
-              </span>
-              <span class="dashboard-banner-network-stats-value" data-selector="average-block-time">
-                <%= Timex.format_duration(average_block_time, Explorer.Counters.AverageBlockTimeDurationFormat) %>
-              </span>
-            </div>
-        <% end %>
-        <div class="dashboard-banner-network-stats-item">
-          <span class="dashboard-banner-network-stats-label">
-            <%= gettext "Total transactions" %>
-          </span>
-          <span class="dashboard-banner-network-stats-value" data-selector="transaction-count">
-            <%= Cldr.Number.to_string!(@transaction_estimated_count, format: "#,###") %>
-          </span>
-        </div>
-        <div class="dashboard-banner-network-stats-item">
-          <span class="dashboard-banner-network-stats-label">
-            <%= gettext "Wallet addresses" %>
-          </span>
-          <span class="dashboard-banner-network-stats-value" data-selector="address-count">
-            <%= Cldr.Number.to_string!(@address_count, format: "#,###") %>
-          </span>
+    <div class="dashboard-banner">
+      <!-- Graph and legend -->
+      <div class="dashboard-banner-network-graph">
+      </div>
+      <!-- Stats -->
+      <div class="dashboard-banner-network-plain-container">
+        <div class="dashboard-banner-network-stats">
+          <%= case @average_block_time do %>
+            <% {:error, :disabled} -> %>
+              <%= nil %>
+            <% average_block_time -> %>
+              <div class="dashboard-banner-network-stats-item dashboard-banner-network-stats-item-1">
+                <span class="dashboard-banner-network-stats-label">
+                  <%= gettext "Average block time" %>
+                </span>
+                <span class="dashboard-banner-network-stats-value" data-selector="average-block-time">
+                  <%= Timex.format_duration(average_block_time, Explorer.Counters.AverageBlockTimeDurationFormat) %>
+                </span>
+              </div>
+          <% end %>
+          <div class="dashboard-banner-network-stats-item dashboard-banner-network-stats-item-2">
+            <span class="dashboard-banner-network-stats-label">
+              <%= gettext "Total transactions" %>
+            </span>
+            <span class="dashboard-banner-network-stats-value" data-selector="transaction-count">
+              <%= Cldr.Number.to_string!(@transaction_estimated_count, format: "#,###") %>
+            </span>
+          </div>
+          <div class="dashboard-banner-network-stats-item dashboard-banner-network-stats-item-3">
+            <span class="dashboard-banner-network-stats-label">
+              <%= gettext "Total blocks" %>
+            </span>
+            <span class="dashboard-banner-network-stats-value" data-selector="block-count">
+              <%= Cldr.Number.to_string!(@block_count, format: "#,###") %>
+            </span>
+          </div>
+          <div class="dashboard-banner-network-stats-item dashboard-banner-network-stats-item-4">
+            <span class="dashboard-banner-network-stats-label">
+              <%= gettext "Wallet addresses" %>
+            </span>
+            <span class="dashboard-banner-network-stats-value" data-selector="address-count">
+              <%= Cldr.Number.to_string!(@address_count, format: "#,###") %>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -39,7 +52,7 @@
 <section class="container">
   <div class="card card-chain-blocks">
     <div class="card-body">
-      <%= link(gettext("View All Blocks →"), to: block_path(BlockScoutWeb.Endpoint, :index), class: "button button-secondary button-xsmall float-right") %>
+      <%= link(gettext("View All Blocks"), to: block_path(BlockScoutWeb.Endpoint, :index), class: "btn-line float-right") %>
       <h2 class="card-title"><%= gettext "Blocks" %></h2>
       <div class="row" data-selector="chain-block-list" data-url="<%= chain_blocks_path(@conn, :chain_blocks) %>">
         <button data-selector="error-message" class="alert alert-danger col-12 text-left" style="display: none;">
@@ -60,7 +73,7 @@
 
   <div class="card card-chain-transactions">
     <div class="card-body">
-      <%= link(gettext("View All Transactions →"), to: transaction_path(BlockScoutWeb.Endpoint, :index), class: "button button-secondary button-xsmall float-right") %>
+      <%= link(gettext("View All Transactions"), to: transaction_path(BlockScoutWeb.Endpoint, :index), class: "btn-line float-right") %>
       <h2 class="card-title"><%= gettext "Transactions" %></h2>
       <div data-selector="channel-batching-message" style="display: none;">
         <div data-selector="reload-button" class="alert alert-info">
