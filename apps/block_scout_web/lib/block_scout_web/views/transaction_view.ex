@@ -6,11 +6,13 @@ defmodule BlockScoutWeb.TransactionView do
   alias Explorer.Chain
   alias Explorer.Chain.Block.Reward
   alias Explorer.Chain.{Address, Block, InternalTransaction, Transaction, Wei}
+  alias Explorer.ExchangeRates.Token
   alias Timex.Duration
 
   import BlockScoutWeb.Gettext
+  import BlockScoutWeb.Tokens.Helpers
 
-  @tabs ["token_transfers", "internal_transactions", "logs"]
+  @tabs ["token_transfers", "internal_transactions", "logs", "raw_trace"]
 
   defguardp is_transaction_type(mod) when mod in [InternalTransaction, Transaction]
 
@@ -29,6 +31,10 @@ defmodule BlockScoutWeb.TransactionView do
   end
 
   def value_transfer?(_), do: false
+
+  def token_transfer_type(transaction) do
+    Chain.transaction_token_transfer_type(transaction)
+  end
 
   def processing_time_duration(%Transaction{block: nil}) do
     :pending
@@ -91,6 +97,9 @@ defmodule BlockScoutWeb.TransactionView do
 
   def contract_creation?(_), do: false
 
+  #  def utf8_encode() do
+  #  end
+
   def fee(%Transaction{} = transaction) do
     {_, value} = Chain.fee(transaction, :wei)
     value
@@ -110,10 +119,16 @@ defmodule BlockScoutWeb.TransactionView do
     end
   end
 
-  def formatted_status(transaction) do
-    transaction
-    |> Chain.transaction_to_status()
-    |> case do
+  def transaction_status(transaction) do
+    Chain.transaction_to_status(transaction)
+  end
+
+  def empty_exchange_rate?(exchange_rate) do
+    Token.null?(exchange_rate)
+  end
+
+  def formatted_status(status) do
+    case status do
       :pending -> gettext("Pending")
       :awaiting_internal_transactions -> gettext("(Awaiting internal transactions for status)")
       :success -> gettext("Success")
@@ -133,7 +148,7 @@ defmodule BlockScoutWeb.TransactionView do
     Cldr.Number.to_string!(gas)
   end
 
-  def should_decode?(transaction) do
+  def skip_decoding?(transaction) do
     contract_creation?(transaction) || value_transfer?(transaction)
   end
 
@@ -247,4 +262,5 @@ defmodule BlockScoutWeb.TransactionView do
   defp tab_name(["token_transfers"]), do: gettext("Token Transfers")
   defp tab_name(["internal_transactions"]), do: gettext("Internal Transactions")
   defp tab_name(["logs"]), do: gettext("Logs")
+  defp tab_name(["raw_trace"]), do: gettext("Raw Trace")
 end

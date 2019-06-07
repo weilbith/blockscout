@@ -8,9 +8,21 @@ defmodule Explorer.Chain.Address do
   use Explorer.Schema
 
   alias Ecto.Changeset
-  alias Explorer.Chain.{Address, Block, Data, Hash, InternalTransaction, SmartContract, Token, Transaction, Wei}
 
-  @optional_attrs ~w(contract_code fetched_coin_balance fetched_coin_balance_block_number nonce)a
+  alias Explorer.Chain.{
+    Address,
+    Block,
+    Data,
+    DecompiledSmartContract,
+    Hash,
+    InternalTransaction,
+    SmartContract,
+    Token,
+    Transaction,
+    Wei
+  }
+
+  @optional_attrs ~w(contract_code fetched_coin_balance fetched_coin_balance_block_number nonce decompiled verified)a
   @required_attrs ~w(hash)a
   @allowed_attrs @optional_attrs ++ @required_attrs
 
@@ -50,6 +62,7 @@ defmodule Explorer.Chain.Address do
            except: [
              :__meta__,
              :smart_contract,
+             :decompiled_smart_contracts,
              :token,
              :contracts_creation_internal_transaction,
              :contracts_creation_transaction,
@@ -62,6 +75,10 @@ defmodule Explorer.Chain.Address do
     field(:fetched_coin_balance_block_number, :integer)
     field(:contract_code, Data)
     field(:nonce, :integer)
+    field(:decompiled, :boolean, default: false)
+    field(:verified, :boolean, default: false)
+    field(:has_decompiled_code?, :boolean, virtual: true)
+    field(:stale?, :boolean, virtual: true)
 
     has_one(:smart_contract, SmartContract)
     has_one(:token, Token, foreign_key: :contract_address_hash)
@@ -79,6 +96,7 @@ defmodule Explorer.Chain.Address do
     )
 
     has_many(:names, Address.Name, foreign_key: :address_hash)
+    has_many(:decompiled_smart_contracts, DecompiledSmartContract, foreign_key: :address_hash)
 
     timestamps()
   end

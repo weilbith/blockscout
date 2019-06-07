@@ -8,13 +8,17 @@ use Mix.Config
 # General application configuration
 config :block_scout_web,
   namespace: BlockScoutWeb,
-  ecto_repos: [Explorer.Repo]
+  ecto_repos: [Explorer.Repo],
+  version: System.get_env("BLOCKSCOUT_VERSION"),
+  release_link: System.get_env("RELEASE_LINK"),
+  decompiled_smart_contract_token: System.get_env("DECOMPILED_SMART_CONTRACT_TOKEN")
 
 config :block_scout_web, BlockScoutWeb.Chain,
   network: System.get_env("NETWORK"),
   subnetwork: System.get_env("SUBNETWORK"),
   network_icon: System.get_env("NETWORK_ICON"),
   logo: System.get_env("LOGO"),
+  logo_footer: System.get_env("LOGO_FOOTER"),
   has_emission_funds: false
 
 config :block_scout_web,
@@ -24,51 +28,7 @@ config :block_scout_web,
     "EtherChain" => "https://www.etherchain.org/",
     "Bloxy" => "https://bloxy.info/"
   },
-
-  other_networks: [],
-  xxother_networks: [
-    %{
-      title: "POA Core",
-      url: "https://blockscout.com/poa/core"
-    },
-    %{
-      title: "POA Sokol",
-      url: "https://blockscout.com/poa/sokol",
-      test_net?: true
-    },
-    %{
-      title: "xDai Chain",
-      url: "https://blockscout.com/poa/dai"
-    },
-    %{
-      title: "Ethereum Mainnet",
-      url: "https://blockscout.com/eth/mainnet"
-    },
-    %{
-      title: "Kovan Testnet",
-      url: "https://blockscout.com/eth/kovan",
-      test_net?: true
-    },
-    %{
-      title: "Ropsten Testnet",
-      url: "https://blockscout.com/eth/ropsten",
-      test_net?: true
-    },
-    %{
-      title: "Goerli Testnet",
-      url: "https://blockscout.com/eth/goerli",
-      test_net?: true
-    },
-    %{
-      title: "Rinkeby Testnet",
-      url: "https://blockscout.com/eth/rinkeby",
-      test_net?: true
-    },
-    %{
-      title: "Ethereum Classic",
-      url: "https://blockscout.com/etc/mainnet"
-    }
-  ]
+  other_networks: System.get_env("SUPPORTED_CHAINS")
 
 config :block_scout_web, BlockScoutWeb.Counters.BlocksIndexedCounter, enabled: true
 
@@ -92,7 +52,7 @@ config :block_scout_web, BlockScoutWeb.Gettext, locales: ~w(en), default_locale:
 
 config :block_scout_web, BlockScoutWeb.SocialMedia,
   twitter: "PoaNetwork",
-  telegram: "oraclesnetwork",
+  telegram: "poa_network",
   facebook: "PoaNetwork",
   instagram: "PoaNetwork"
 
