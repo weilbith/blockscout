@@ -8,8 +8,12 @@ $footer-background-color: $primary;
 $footer-title-color: $secondary;
 $footer-text-color: $secondary;
 $footer-item-disc-color: $secondary;
+$footer-logo-height: 100px;
 .footer-logo {
   filter: brightness(0) invert(1);
+}
+.footer_link {
+  color: $secondary;
 }
 
 // dashboard
@@ -28,6 +32,9 @@ $dashboard-banner-gradient-end: lighten($primary, 5); // gradient end
 $dashboard-banner-network-plain-container-background-color: $tertiary; // stats bg
 
 // navigation
+$navbar-logo-width: 120px;
+$navbar-logo-height: auto;
+
 .navbar {
   box-shadow: 0px 0px 30px 0px rgba(21, 53, 80, 0.12);
 } // header shadow
