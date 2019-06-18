@@ -34,6 +34,9 @@ endif
 ifdef LOGO
 	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'LOGO=$(LOGO)'
 endif
+ifdef LOGO_FOOTER
+	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'LOGO_FOOTER=$(LOGO_FOOTER)'
+endif
 ifdef NETWORK
 	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'NETWORK=$(NETWORK)'
 endif
@@ -46,9 +49,14 @@ endif
 ifdef NETWORK_PATH
 	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'NETWORK_PATH=$(NETWORK_PATH)'
 endif
-
+ifdef LINK_TO_OTHER_EXPLORERS
+	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'LINK_TO_OTHER_EXPLORERS=$(LINK_TO_OTHER_EXPLORERS)'
+endif
+ifdef SUPPORTED_CHAINS
+	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'SUPPORTED_CHAINS=$(SUPPORTED_CHAINS)'
+endif
 HAS_BLOCKSCOUT_IMAGE := $(shell docker images | grep ${DOCKER_IMAGE})
-build: 
+build:
 	@echo "==> Checking for blockscout image $(DOCKER_IMAGE)"
 ifdef HAS_BLOCKSCOUT_IMAGE
 	@echo "==> Image exist. Using $(DOCKER_IMAGE)"
@@ -86,7 +94,7 @@ else
 	@$(MAKE) -f $(THIS_FILE) migrate
 endif
 
-start: build postgres 
+start: build postgres
 	@echo "==> Starting blockscout"
 	@docker run --rm --name $(BS_CONTAINER_NAME) \
 					$(BLOCKSCOUT_CONTAINNER_PARAMS) \
@@ -99,4 +107,4 @@ run: start
 				migrate \
 				start \
 				postgres \
-				run 
+				run
