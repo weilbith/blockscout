@@ -100,6 +100,12 @@ defmodule BlockScoutWeb.Etherscan do
     "result" => []
   }
 
+  @account_eth_get_balance_example_value %{
+    "jsonrpc" => "2.0",
+    "result" => "0x0234c8a3397aab58",
+    "id" => 1
+  }
+
   @account_tokentx_example_value %{
     "status" => "1",
     "message" => "OK",
@@ -157,7 +163,16 @@ defmodule BlockScoutWeb.Etherscan do
         "contractAddress" => "0x0000000000000000000000000000000000000000",
         "name" => "Example Token",
         "decimals" => "18",
-        "symbol" => "ET"
+        "symbol" => "ET",
+        "type" => "ERC-20"
+      },
+      %{
+        "balance" => "1",
+        "contractAddress" => "0x0000000000000000000000000000000000000001",
+        "name" => "Example ERC-721 Token",
+        "decimals" => "18",
+        "symbol" => "ET7",
+        "type" => "ERC-721"
       }
     ]
   }
@@ -434,6 +449,7 @@ defmodule BlockScoutWeb.Etherscan do
       "from" => "0x000000000000000000000000000000000000000c",
       "gasLimit" => "91966",
       "gasUsed" => "95123",
+      "gasPrice" => "100000",
       "hash" => "0x0000000000000000000000000000000000000000000000000000000000000004",
       "input" => "0x04",
       "logs" => [
@@ -697,11 +713,6 @@ defmodule BlockScoutWeb.Etherscan do
         type: "timestamp",
         definition: "When the block was collated.",
         example: ~s("1480072029")
-      },
-      blockReward: %{
-        type: "block reward",
-        definition: "The reward given to the miner of a block.",
-        example: ~s("5003251945421042780")
       }
     }
   }
@@ -980,6 +991,7 @@ defmodule BlockScoutWeb.Etherscan do
       input: @input_type,
       gasLimit: @wei_type,
       gasUsed: @gas_type,
+      gasPrice: @wei_type,
       logs: %{
         type: "array",
         array_type: @logs_details
@@ -1026,6 +1038,49 @@ defmodule BlockScoutWeb.Etherscan do
         example: ~s("1537234460")
       }
     }
+  }
+
+  @account_eth_get_balance_action %{
+    name: "eth_get_balance",
+    description:
+      "Mimics Ethereum JSON RPC's eth_getBalance. Returns the balance as of the provided block (defaults to latest)",
+    required_params: [
+      %{
+        key: "address",
+        placeholder: "addressHash",
+        type: "string",
+        description: "The address of the account."
+      }
+    ],
+    optional_params: [
+      %{
+        key: "block",
+        placeholder: "block",
+        type: "string",
+        description: """
+        Either the block number as a string, or one of latest, earliest or pending
+
+        latest will be the latest balance in a *consensus* block.
+        earliest will be the first recorded balance for the address.
+        pending will be the latest balance in consensus *or* nonconcensus blocks.
+        """
+      }
+    ],
+    responses: [
+      %{
+        code: "200",
+        description: "successful operation",
+        example_value: Jason.encode!(@account_eth_get_balance_example_value),
+        model: %{
+          name: "Result",
+          fields: %{
+            jsonrpc: @jsonrpc_version_type,
+            id: @id_type,
+            result: @hex_number_type
+          }
+        }
+      }
+    ]
   }
 
   @account_balance_action %{
@@ -1134,7 +1189,7 @@ defmodule BlockScoutWeb.Etherscan do
         key: "sort",
         type: "string",
         description:
-          "A string representing the order by block number direction. Defaults to ascending order. Available values: asc, desc"
+          "A string representing the order by block number direction. Defaults to descending order. Available values: asc, desc"
       },
       %{
         key: "startblock",
@@ -2203,6 +2258,7 @@ defmodule BlockScoutWeb.Etherscan do
   @account_module %{
     name: "account",
     actions: [
+      @account_eth_get_balance_action,
       @account_balance_action,
       @account_balancemulti_action,
       @account_txlist_action,

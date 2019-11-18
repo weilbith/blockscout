@@ -25,7 +25,7 @@
               <%= gettext "Total transactions" %>
             </span>
             <span class="dashboard-banner-network-stats-value" data-selector="transaction-count">
-              <%= Cldr.Number.to_string!(@transaction_estimated_count, format: "#,###") %>
+              <%= BlockScoutWeb.Cldr.Number.to_string!(@transaction_estimated_count, format: "#,###") %>
             </span>
           </div>
           <div class="dashboard-banner-network-stats-item dashboard-banner-network-stats-item-3">
@@ -33,7 +33,7 @@
               <%= gettext "Total blocks" %>
             </span>
             <span class="dashboard-banner-network-stats-value" data-selector="block-count">
-              <%= Cldr.Number.to_string!(@block_count, format: "#,###") %>
+              <%= BlockScoutWeb.Cldr.Number.to_string!(@block_count, format: "#,###") %>
             </span>
           </div>
           <div class="dashboard-banner-network-stats-item dashboard-banner-network-stats-item-4">
@@ -41,7 +41,7 @@
               <%= gettext "Wallet addresses" %>
             </span>
             <span class="dashboard-banner-network-stats-value" data-selector="address-count">
-              <%= Cldr.Number.to_string!(@address_count, format: "#,###") %>
+              <%= BlockScoutWeb.Cldr.Number.to_string!(@address_count, format: "#,###") %>
             </span>
           </div>
         </div>
@@ -60,12 +60,49 @@
             <%= gettext "Something went wrong, click to reload." %>
           </span>
         </button>
-        <div data-selector="loading-message" class="tile tile-muted text-center mt-3 w-100">
-          <span class="loading-spinner-small mr-2">
-            <span class="loading-spinner-block-1"></span>
-            <span class="loading-spinner-block-2"></span>
-          </span>
-          <%= gettext("Loading...") %>
+         <div hidden data-selector="loading-message" class="col-lg-3" >
+         <div data-selector="chain-block">
+         <div class="tile tile-type-block n-p d-flex flex-column">
+         <a class="tile-title"><span class="tile-loader tile-label-loader"></span> </a>
+         <div class="tile-bottom-contents">
+         <div class="dark-block-loader"></div>
+         <div class="dark-block-loader"></div>
+         </div>
+        </div>
+        </div>
+        </div>
+         <div hidden data-selector="loading-message" class="col-lg-3" >
+         <div data-selector="chain-block">
+         <div class="tile tile-type-block n-p d-flex flex-column">
+         <a class="tile-title"><span class="tile-loader tile-label-loader"></span> </a>
+         <div class="tile-bottom-contents">
+         <div class="dark-block-loader"></div>
+         <div class="dark-block-loader"></div>
+         </div>
+        </div>
+        </div>
+        </div>
+         <div hidden data-selector="loading-message" class="col-lg-3" >
+         <div data-selector="chain-block">
+         <div class="tile tile-type-block n-p d-flex flex-column">
+         <a class="tile-title"><span class="tile-loader tile-label-loader"></span> </a>
+         <div class="tile-bottom-contents">
+         <div class="dark-block-loader"></div>
+         <div class="dark-block-loader"></div>
+         </div>
+        </div>
+        </div>
+        </div>
+         <div hidden data-selector="loading-message" class="col-lg-3" >
+         <div data-selector="chain-block">
+         <div class="tile tile-type-block n-p d-flex flex-column">
+         <a class="tile-title"><span class="tile-loader tile-label-loader"></span> </a>
+         <div class="tile-bottom-contents">
+        <div class="dark-block-loader"></div>
+         <div class="dark-block-loader"></div>
+         </div>
+        </div>
+        </div>
         </div>
       </div>
     </div>
@@ -74,7 +111,7 @@
   <div class="card card-chain-transactions">
     <div class="card-body">
       <%= link(gettext("View All Transactions"), to: transaction_path(BlockScoutWeb.Endpoint, :index), class: "btn-line float-right") %>
-      <h2 class="card-title"><%= gettext "Transactions" %></h2>
+      <h2 class="card-title lg-card-title"><%= gettext "Transactions" %></h2>
       <div data-selector="channel-batching-message" style="display: none;">
         <div data-selector="reload-button" class="alert alert-info">
           <a href="#" class="alert-link"><span data-selector="channel-batching-count"></span> <%= gettext "More transactions have come in" %></a>
@@ -86,12 +123,8 @@
             <%= gettext "Something went wrong, click to retry." %>
           </span>
         </button>
-        <div data-selector="loading-message" class="tile tile-muted text-center mt-3">
-          <span class="loading-spinner-small mr-2">
-            <span class="loading-spinner-block-1"></span>
-            <span class="loading-spinner-block-2"></span>
-          </span>
-          <%= gettext("Loading...") %>
+        <div hidden data-selector="loading-message">
+          <%= render BlockScoutWeb.CommonComponentsView, "_tile-loader.html" %>
         </div>
       </span>
     </div>

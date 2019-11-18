@@ -41,7 +41,8 @@ defmodule BlockScoutWeb.TransactionController do
             View.render_to_string(
               TransactionView,
               "_tile.html",
-              transaction: transaction
+              transaction: transaction,
+              conn: conn
             )
           end),
         next_page_path: next_page_path
@@ -61,21 +62,16 @@ defmodule BlockScoutWeb.TransactionController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Chain.string_to_transaction_hash(id) do
-      {:ok, transaction_hash} -> show_transaction(conn, id, Chain.hash_to_transaction(transaction_hash))
-      :error -> conn |> put_status(422) |> render("invalid.html", transaction_hash: id)
-    end
-  end
-
-  defp show_transaction(conn, id, {:error, :not_found}) do
-    conn |> put_status(404) |> render("not_found.html", transaction_hash: id)
-  end
-
-  defp show_transaction(conn, id, {:ok, %Chain.Transaction{} = transaction}) do
-    if Chain.transaction_has_token_transfers?(transaction.hash) do
-      redirect(conn, to: transaction_token_transfer_path(conn, :index, id))
+    with {:ok, transaction_hash} <- Chain.string_to_transaction_hash(id),
+         :ok <- Chain.check_transaction_exists(transaction_hash) do
+      if Chain.transaction_has_token_transfers?(transaction_hash) do
+        redirect(conn, to: transaction_token_transfer_path(conn, :index, id))
+      else
+        redirect(conn, to: transaction_internal_transaction_path(conn, :index, id))
+      end
     else
-      redirect(conn, to: transaction_internal_transaction_path(conn, :index, id))
+      :error -> conn |> put_status(422) |> render("invalid.html", transaction_hash: id)
+      :not_found -> conn |> put_status(404) |> render("not_found.html", transaction_hash: id)
     end
   end
 end

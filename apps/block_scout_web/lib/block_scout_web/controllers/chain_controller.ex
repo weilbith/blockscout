@@ -2,8 +2,9 @@ defmodule BlockScoutWeb.ChainController do
   use BlockScoutWeb, :controller
 
   alias BlockScoutWeb.ChainView
-  alias Explorer.{Chain, PagingOptions, Repo}
+  alias Explorer.{Chain, PagingOptions}
   alias Explorer.Chain.{Address, Block, Transaction}
+  alias Explorer.Chain.Supply.RSK
   alias Explorer.Counters.AverageBlockTime
   alias Explorer.ExchangeRates.Token
   alias Explorer.Market
@@ -13,15 +14,25 @@ defmodule BlockScoutWeb.ChainController do
     transaction_estimated_count = Chain.transaction_estimated_count()
     block_count = Chain.block_estimated_count()
 
+    market_cap_calculation =
+      case Application.get_env(:explorer, :supply) do
+        RSK ->
+          RSK
+
+        _ ->
+          :standard
+      end
+
     exchange_rate = Market.get_exchange_rate(Explorer.coin()) || Token.null()
 
     render(
       conn,
       "show.html",
-      address_count: Chain.count_addresses_with_balance_from_cache(),
+      address_count: Chain.count_addresses_from_cache(),
       average_block_time: AverageBlockTime.average_block_time(),
       exchange_rate: exchange_rate,
       chart_data_path: market_history_chart_path(conn, :show),
+      market_cap_calculation: market_cap_calculation,
       transaction_estimated_count: transaction_estimated_count,
       transactions_path: recent_transactions_path(conn, :index),
       block_count: block_count
@@ -40,6 +51,8 @@ defmodule BlockScoutWeb.ChainController do
         not_found(conn)
     end
   end
+
+  def search(conn, _), do: not_found(conn)
 
   def token_autocomplete(conn, %{"q" => term}) when is_binary(term) do
     if term == "" do
@@ -61,9 +74,15 @@ defmodule BlockScoutWeb.ChainController do
   def chain_blocks(conn, _params) do
     if ajax?(conn) do
       blocks =
-        [paging_options: %PagingOptions{page_size: 4}]
+        [
+          paging_options: %PagingOptions{page_size: 4},
+          necessity_by_association: %{
+            [miner: :names] => :optional,
+            :transactions => :optional,
+            :rewards => :optional
+          }
+        ]
         |> Chain.list_blocks()
-        |> Repo.preload([[miner: :names], :transactions, :rewards])
         |> Enum.map(fn block ->
           %{
             chain_block_html:

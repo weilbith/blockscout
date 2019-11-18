@@ -1,7 +1,7 @@
 defmodule BlockScoutWeb.API.RPC.AddressView do
   use BlockScoutWeb, :view
 
-  alias BlockScoutWeb.API.RPC.RPCView
+  alias BlockScoutWeb.API.RPC.{EthRPCView, RPCView}
 
   def render("listaccounts.json", %{accounts: accounts}) do
     accounts = Enum.map(accounts, &prepare_account/1)
@@ -49,6 +49,14 @@ defmodule BlockScoutWeb.API.RPC.AddressView do
   def render("getminedblocks.json", %{blocks: blocks}) do
     data = Enum.map(blocks, &prepare_block/1)
     RPCView.render("show.json", data: data)
+  end
+
+  def render("eth_get_balance.json", %{balance: balance}) do
+    EthRPCView.render("show.json", %{result: balance, id: 0})
+  end
+
+  def render("eth_get_balance_error.json", %{error: message}) do
+    EthRPCView.render("error.json", %{error: message, id: 0})
   end
 
   def render("error.json", assigns) do
@@ -149,8 +157,7 @@ defmodule BlockScoutWeb.API.RPC.AddressView do
   defp prepare_block(block) do
     %{
       "blockNumber" => to_string(block.number),
-      "timeStamp" => to_string(block.timestamp),
-      "blockReward" => to_string(block.reward.value)
+      "timeStamp" => to_string(block.timestamp)
     }
   end
 
@@ -160,7 +167,8 @@ defmodule BlockScoutWeb.API.RPC.AddressView do
       "contractAddress" => to_string(token.contract_address_hash),
       "name" => token.name,
       "decimals" => to_string(token.decimals),
-      "symbol" => token.symbol
+      "symbol" => token.symbol,
+      "type" => token.type
     }
   end
 

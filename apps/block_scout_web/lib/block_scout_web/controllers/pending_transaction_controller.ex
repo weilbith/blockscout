@@ -13,7 +13,8 @@ defmodule BlockScoutWeb.PendingTransactionController do
         [
           necessity_by_association: %{
             [from_address: :names] => :optional,
-            [to_address: :names] => :optional
+            [to_address: :names] => :optional,
+            [created_contract_address: :names] => :optional
           }
         ],
         paging_options(params)
@@ -42,7 +43,8 @@ defmodule BlockScoutWeb.PendingTransactionController do
             View.render_to_string(
               TransactionView,
               "_tile.html",
-              transaction: transaction
+              transaction: transaction,
+              conn: conn
             )
           end),
         next_page_path: next_page_url
@@ -51,10 +53,7 @@ defmodule BlockScoutWeb.PendingTransactionController do
   end
 
   def index(conn, _params) do
-    render(conn, "index.html",
-      current_path: current_path(conn),
-      pending_transaction_count: Chain.pending_transaction_count()
-    )
+    render(conn, "index.html", current_path: current_path(conn))
   end
 
   defp get_pending_transactions_and_next_page(options) do

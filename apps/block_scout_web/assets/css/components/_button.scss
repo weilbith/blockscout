@@ -10,7 +10,7 @@ $button-secondary-color: $secondary !default;
   padding: 10px 16px;
   text-align: center;
   text-decoration: none;
-  transition: all 0.25s;
+  transition: $transition-cont;
   white-space: nowrap;
 
   &-primary {
@@ -23,6 +23,7 @@ $button-secondary-color: $secondary !default;
       background-color: darken($button-primary-color, 10%);
       border-color: darken($button-primary-color, 10%);
       color: #fff;
+      outline: none !important;
       text-decoration: none;
     }
 

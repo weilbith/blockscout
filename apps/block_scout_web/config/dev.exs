@@ -15,7 +15,14 @@ port =
   end
 
 config :block_scout_web, BlockScoutWeb.Endpoint,
-  http: [port: port || 4000],
+  http: [
+    port: port || 4000
+  ],
+  url: [
+    scheme: "http",
+    host: System.get_env("BLOCKSCOUT_HOST") || "localhost",
+    path: System.get_env("NETWORK_PATH") || "/"
+  ],
   https: [
     port: (port && port + 1) || 4001,
     cipher_suite: :strong,
