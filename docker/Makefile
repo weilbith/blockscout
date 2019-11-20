@@ -46,9 +46,18 @@ endif
 ifdef NETWORK_PATH
 	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'NETWORK_PATH=$(NETWORK_PATH)'
 endif
+ifdef LINK_TO_OTHER_EXPLORERS
+	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'LINK_TO_OTHER_EXPLORERS=$(LINK_TO_OTHER_EXPLORERS)'
+endif
+ifdef SUPPORTED_CHAINS
+	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'SUPPORTED_CHAINS=$(SUPPORTED_CHAINS)'
+endif
+ifdef BLOCKSCOUT_VERSION
+	BLOCKSCOUT_CONTAINNER_PARAMS += -e 'BLOCKSCOUT_VERSION=$(BLOCKSCOUT_VERSION)'
+endif
 
 HAS_BLOCKSCOUT_IMAGE := $(shell docker images | grep ${DOCKER_IMAGE})
-build: 
+build:
 	@echo "==> Checking for blockscout image $(DOCKER_IMAGE)"
 ifdef HAS_BLOCKSCOUT_IMAGE
 	@echo "==> Image exist. Using $(DOCKER_IMAGE)"
@@ -86,12 +95,13 @@ else
 	@$(MAKE) -f $(THIS_FILE) migrate
 endif
 
-start: build postgres 
+start: build postgres
 	@echo "==> Starting blockscout"
-	@docker run --rm --name $(BS_CONTAINER_NAME) \
+	@docker run --rm -d --name $(BS_CONTAINER_NAME) --env-file .env \
 					$(BLOCKSCOUT_CONTAINNER_PARAMS) \
 					-p 4000:4000 \
 					$(DOCKER_IMAGE) /bin/sh -c "mix phx.server"
+	@docker logs -f $(BS_CONTAINER_NAME)
 
 run: start
 
@@ -99,4 +109,4 @@ run: start
 				migrate \
 				start \
 				postgres \
-				run 
+				run
