@@ -12,11 +12,7 @@ defmodule Explorer.ExchangeRates.Source do
   """
   @spec fetch_exchange_rates(module) :: {:ok, [Token.t()]} | {:error, any}
   def fetch_exchange_rates(source \\ exchange_rates_source()) do
-    if(source == CoinMarketCap) do
-      fetch_exchange_rates_from_paginable_source(source)
-    else
-      fetch_exchange_rates_request(source)
-    end
+    {:error, "exchange rates not found for this network"}
   end
 
   defp fetch_exchange_rates_from_paginable_source(source, page \\ 1) do
