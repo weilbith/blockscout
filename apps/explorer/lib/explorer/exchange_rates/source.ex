@@ -12,6 +12,7 @@ defmodule Explorer.ExchangeRates.Source do
   """
   @spec fetch_exchange_rates(module) :: {:ok, [Token.t()]} | {:error, any}
   def fetch_exchange_rates(source \\ exchange_rates_source()) do
+    Process.sleep(4000)
     {:error, "exchange rates not found for this network"}
   end
 
