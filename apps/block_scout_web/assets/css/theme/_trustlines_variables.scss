@@ -1,5 +1,7 @@
 // general
 $primary: #0f3255;
+$dark-primary: #1e8cc3;
+$dark-primary-alternate: #1e8cc3;
 $secondary: #f5faff;
 $tertiary: #1e8cc3;
 
@@ -72,3 +74,10 @@ $btn-qr-color: $primary; // btn qr-code
 // card
 $card-background-1: $primary;
 $card-tab-active: $primary;
+
+// Fix the dark mode
+.dark-theme-applied {
+  .tile a {
+    color: $secondary !important;
+  }
+}
