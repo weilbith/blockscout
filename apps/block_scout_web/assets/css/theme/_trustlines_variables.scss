@@ -77,6 +77,12 @@ $card-tab-active: $primary;
 
 // Fix the dark mode
 .dark-theme-applied {
+  /*
+   * Per default, the following refers to the primary color of the light mode.
+   * But the dark blue as font color makes the text unreadable on the dark violet
+   * background color by the dark theme. This is exactly what our secondary theme
+   * color is about to solve for the light mode.
+   */
   .tile a {
     color: $secondary !important;
   }
