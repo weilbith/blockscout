@@ -1,9 +1,5 @@
-// general
-$primary: #0f3255;
-$dark-primary: #1e8cc3;
-$dark-primary-alternate: #1e8cc3;
-$secondary: #f5faff;
-$tertiary: #1e8cc3;
+// Avoid redundancy and re-use the non-critical variables.
+@import "trustlines_variables-non-critical";
 
 // footer
 $footer-background-color: $primary;
